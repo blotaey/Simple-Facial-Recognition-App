@@ -43,7 +43,7 @@
             // picCapture
             // 
             this.picCapture.Location = new System.Drawing.Point(9, 10);
-            this.picCapture.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.picCapture.Margin = new System.Windows.Forms.Padding(2);
             this.picCapture.Name = "picCapture";
             this.picCapture.Size = new System.Drawing.Size(648, 379);
             this.picCapture.TabIndex = 0;
@@ -52,7 +52,7 @@
             // btnCapture
             // 
             this.btnCapture.Location = new System.Drawing.Point(662, 10);
-            this.btnCapture.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnCapture.Margin = new System.Windows.Forms.Padding(2);
             this.btnCapture.Name = "btnCapture";
             this.btnCapture.Size = new System.Drawing.Size(131, 28);
             this.btnCapture.TabIndex = 1;
@@ -63,17 +63,18 @@
             // btnDetectFaces
             // 
             this.btnDetectFaces.Location = new System.Drawing.Point(662, 42);
-            this.btnDetectFaces.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnDetectFaces.Margin = new System.Windows.Forms.Padding(2);
             this.btnDetectFaces.Name = "btnDetectFaces";
             this.btnDetectFaces.Size = new System.Drawing.Size(131, 30);
             this.btnDetectFaces.TabIndex = 2;
             this.btnDetectFaces.Text = "2. Detect Faces";
             this.btnDetectFaces.UseVisualStyleBackColor = true;
+            this.btnDetectFaces.Click += new System.EventHandler(this.btnDetectFaces_Click);
             // 
             // txtPersonName
             // 
             this.txtPersonName.Location = new System.Drawing.Point(662, 225);
-            this.txtPersonName.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtPersonName.Margin = new System.Windows.Forms.Padding(2);
             this.txtPersonName.Name = "txtPersonName";
             this.txtPersonName.Size = new System.Drawing.Size(132, 20);
             this.txtPersonName.TabIndex = 3;
@@ -81,7 +82,7 @@
             // btnSave
             // 
             this.btnSave.Location = new System.Drawing.Point(662, 248);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(2);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(131, 28);
             this.btnSave.TabIndex = 5;
@@ -91,7 +92,7 @@
             // btnTrain
             // 
             this.btnTrain.Location = new System.Drawing.Point(662, 280);
-            this.btnTrain.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnTrain.Margin = new System.Windows.Forms.Padding(2);
             this.btnTrain.Name = "btnTrain";
             this.btnTrain.Size = new System.Drawing.Size(131, 31);
             this.btnTrain.TabIndex = 6;
@@ -101,7 +102,7 @@
             // btnRecognize
             // 
             this.btnRecognize.Location = new System.Drawing.Point(662, 316);
-            this.btnRecognize.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnRecognize.Margin = new System.Windows.Forms.Padding(2);
             this.btnRecognize.Name = "btnRecognize";
             this.btnRecognize.Size = new System.Drawing.Size(131, 29);
             this.btnRecognize.TabIndex = 7;
@@ -111,7 +112,7 @@
             // picDetected
             // 
             this.picDetected.Location = new System.Drawing.Point(662, 77);
-            this.picDetected.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.picDetected.Margin = new System.Windows.Forms.Padding(2);
             this.picDetected.Name = "picDetected";
             this.picDetected.Size = new System.Drawing.Size(131, 143);
             this.picDetected.TabIndex = 8;
@@ -130,10 +131,9 @@
             this.Controls.Add(this.btnDetectFaces);
             this.Controls.Add(this.btnCapture);
             this.Controls.Add(this.picCapture);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picCapture)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picDetected)).EndInit();
             this.ResumeLayout(false);
