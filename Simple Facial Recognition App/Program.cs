@@ -16,7 +16,7 @@ namespace Simple_Facial_Recognition_App
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new picDetected());
+            Application.Run(new Form1());
         }
     }
 }
