@@ -11,6 +11,8 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.CV.Face;
 using Emgu.CV.CvEnum;
+using System.IO;
+using System.Threading;
 
 namespace Simple_Facial_Recognition_App
 {
@@ -22,6 +24,7 @@ namespace Simple_Facial_Recognition_App
         Mat frame = new Mat();
         private bool facesDetectionEnabled = false;
         CascadeClassifier faceCascadeClassifier = new CascadeClassifier("haarcascade_frontalface_alt.xml");
+        bool EnableSaveImage = false;
         #endregion
         public Form1()
         {
@@ -57,6 +60,31 @@ namespace Simple_Facial_Recognition_App
                     {
                         //Draw square around each face
                         CvInvoke.Rectangle(currentFrame, face, new Bgr(Color.Red).MCvScalar, 2);
+
+                        //Step 3: Add Person 
+                        //Assign the face to the picture box face picDetected
+                        Image<Bgr, Byte> resultImage = currentFrame.Convert<Bgr, Byte>();
+                        resultImage.ROI = face;
+                        picDetected.SizeMode = PictureBoxSizeMode.StretchImage;
+                        picDetected.Image = resultImage.Bitmap;
+
+                        if (EnableSaveImage)
+                        {
+                            //Creating a directory
+                            string path = Directory.GetCurrentDirectory() + @"\TrainedImages";
+                            if (!Directory.Exists(path))
+                                Directory.CreateDirectory(path);
+
+                            //Saving 10 images with delay a second for each image
+                            for (int i = 0; i < 10; i++)
+                            {
+                                //Resize the image then saving it 
+                                resultImage.Resize(200, 200, Inter.Cubic).Save(path + @"\" + txtPersonName.Text + "_" + DateTime.Now.ToString("dd-mm-yyyy-hh-mm-ss") + ".jpg");
+                                Thread.Sleep(2000);
+                            }
+                        }
+
+                        EnableSaveImage = false;
                     }
                 }
             }
@@ -69,6 +97,20 @@ namespace Simple_Facial_Recognition_App
         private void btnDetectFaces_Click(object sender, EventArgs e)
         {
             facesDetectionEnabled = true;
+        }
+
+        private void txtPersonName_TextChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void btnAddPerson_Click(object sender, EventArgs e)
+        {
+            btnAddPerson.Enabled = false;
+            EnableSaveImage = true;
+        }
+
+        private void picDetected_Click(object sender, EventArgs e)
+        {
 
         }
     }
