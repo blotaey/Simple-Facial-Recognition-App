@@ -13,6 +13,7 @@ using Emgu.CV.Face;
 using Emgu.CV.CvEnum;
 using System.IO;
 using System.Threading;
+using System.Diagnostics;
 
 namespace Simple_Facial_Recognition_App
 {
@@ -25,6 +26,11 @@ namespace Simple_Facial_Recognition_App
         private bool facesDetectionEnabled = false;
         CascadeClassifier faceCascadeClassifier = new CascadeClassifier("haarcascade_frontalface_alt.xml");
         bool EnableSaveImage = false;
+        private bool IsTrained = false;
+        EigenFaceRecognizer recognizer;
+        List<Image<Gray, Byte>> TrainedFaces = new List<Image<Gray, byte>>();
+        List<int> PersonsLabes = new List<int>();
+        List<string> PersonsNames = new List<string>();
         #endregion
         public Form1()
         {
@@ -85,6 +91,35 @@ namespace Simple_Facial_Recognition_App
                         }
 
                         EnableSaveImage = false;
+
+                        if (btnAddPerson.InvokeRequired)
+                        {
+                            btnAddPerson.Invoke(new ThreadStart(delegate {
+                                btnAddPerson.Enabled = true;
+                            }));
+                        }
+
+                        // Step 5: Recognize the face
+                        if (IsTrained)
+                        { 
+                            Image<Gray, Byte> GrayFaceResult = resultImage.Convert<Gray, Byte>().Resize(200,200,Inter.Cubic);
+                            CvInvoke.EqualizeHist(GrayFaceResult, GrayFaceResult);
+                            var result = recognizer.Predict(GrayFaceResult);
+                            Debug.WriteLine(result.Label + ". " + result.Distance);
+                            //Known Faces
+                            if (result.Label != -1 && result.Distance < 2000)
+                            {
+                                CvInvoke.PutText(currentFrame, PersonsNames[result.Label], new Point(face.X - 2, face.Y - 2),
+                                    FontFace.HersheyComplex, 1.0, new Bgr(Color.Orange).MCvScalar);
+                                CvInvoke.Rectangle(currentFrame, face, new Bgr(Color.Green).MCvScalar, 2);
+                            }
+                            //Unknown Faces
+                            else
+                            {
+                                CvInvoke.PutText(currentFrame, "Unknown", new Point(face.X - 2, face.Y - 2),
+                                    FontFace.HersheyComplex, 1.0, new Bgr(Color.Orange).MCvScalar);
+                            }
+                        }
                     }
                 }
             }
@@ -108,10 +143,59 @@ namespace Simple_Facial_Recognition_App
             btnAddPerson.Enabled = false;
             EnableSaveImage = true;
         }
-
-        private void picDetected_Click(object sender, EventArgs e)
+        private void btnTrain_Click(object sender, EventArgs e)
         {
+            TrainImagesFromDir();
+        }
+        //Step 4: Train Images
+        private bool TrainImagesFromDir()
+        {
+            int ImagesCount = 0;
+            double ThreshHold = -1;
+            TrainedFaces.Clear();
+            PersonsLabes.Clear();
+            PersonsNames.Clear();
+            try
+            {
+                string path = Directory.GetCurrentDirectory() + @"\TrainedImages";
+                string[] files = Directory.GetFiles(path, "*.jpg", SearchOption.AllDirectories);
 
+                foreach (var file in files)
+                {
+                    Image<Gray, byte> trainedImage = new Image<Gray, byte>(file).Resize(200, 200, Inter.Cubic);
+                    CvInvoke.EqualizeHist(trainedImage, trainedImage);
+                    TrainedFaces.Add(trainedImage);
+                    PersonsLabes.Add(ImagesCount);
+                    string name = file.Split('\\').Last().Split('_')[0];
+                    PersonsNames.Add(name);
+                    ImagesCount++;
+                    Debug.WriteLine(ImagesCount + ". " + name);
+
+                }
+
+                if (TrainedFaces.Count() > 0)
+                {
+                    // recognizer = new EigenFaceRecognizer(ImagesCount,Threshold);
+                    recognizer = new EigenFaceRecognizer(ImagesCount, ThreshHold);
+                    recognizer.Train(TrainedFaces.ToArray(), PersonsLabes.ToArray());
+
+                    IsTrained = true;
+                    //Debug.WriteLine(ImagesCount);
+                    //Debug.WriteLine(isTrained);
+                    return true;
+                }
+                else
+                {
+                    IsTrained = false;
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                IsTrained = false;
+                MessageBox.Show("Error in Train Images: " + ex.Message);
+                return false;
+            }
         }
     }
 }
